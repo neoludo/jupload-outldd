@@ -34,6 +34,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import wjhk.jupload2.filedata.DefaultFileData;
 import wjhk.jupload2.policies.UploadPolicy;
 
@@ -80,8 +81,16 @@ public class DnDListener implements DropTargetListener {
     /**
      * @see java.awt.dnd.DropTargetListener#dragOver(java.awt.dnd.DropTargetDragEvent)
      */
-    public void dragOver(DropTargetDragEvent e) {
-        // Nothing to do.
+    public void dragOver(DropTargetDragEvent dtde) {
+    	boolean dropFiles = dtde.getTransferable().isDataFlavorSupported(DataFlavor.javaFileListFlavor);
+        
+        int action = dtde.getDropAction();
+        if (!dropFiles) action = DnDConstants.ACTION_NONE;
+        
+        // Un-comment this, if you do not want to remove the Email from Outlook.
+        if (action == DnDConstants.ACTION_MOVE) action = DnDConstants.ACTION_COPY;
+        
+        dtde.acceptDrag(action);
     }
 
     /**
@@ -99,7 +108,7 @@ public class DnDListener implements DropTargetListener {
         if (!e.isDataFlavorSupported(DataFlavor.javaFileListFlavor) && !e.isDataFlavorSupported(uriListFlavor)) {
             e.rejectDrop();
         } else {
-            e.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
+            e.acceptDrop(DnDConstants.ACTION_COPY);
             try {
                 File[] fileArray;
 
@@ -134,6 +143,7 @@ public class DnDListener implements DropTargetListener {
                 this.uploadPolicy.afterFileDropped(e);
 
             } catch (IOException ioe) {
+                ioe.printStackTrace();
                 this.uploadPolicy.displayErr("DnDListener.drop()", ioe);
                 e.rejectDrop();
             } catch (UnsupportedFlavorException ufe) {
