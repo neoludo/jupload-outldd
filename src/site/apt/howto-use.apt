@@ -1,0 +1,107 @@
+           --------------------
+           JUpload - File Upload Applet - HowTo-use the applet?
+           --------------------
+           --------------------
+           --------------------
+
+HowTo-use the applet?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+%{toc}
+
+
+* {General view}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	
+	JUpload is provided with two main server-side samples:
+	
+	* One for Java. It is actually the root of a webapp, which you can deploy on any J2EE server, like tomcat.
+	
+	* One for PHP
+	
+	[]
+	
+	In either case, this will allow you to:
+	
+	* Test the applet. During the JUpload development process, I personally use the Java webapp, to actually execute the upload, and check that the upload result is Ok.
+	
+	* Embed the applet into your own application. The Java sample is more a starting base, which you'll have to extends. The PHP sample, contains 
+	both a JUpload class (which you should use 'as is'), and a sample use of this class, which you should adapt, according to your needs.    
+
+	[]
+	
+	All samples are available in the core JUpload package, and on the SVN:
+	
+	* In the package, the path is:  ./samples.java and ./samples.PHP
+	
+	* In SVN, the path is: ./src/site/resources/samples.java and ./src/site/resources/samples.PHP
+	
+	[]
+	
+
+* {Use the java sample}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+	The java sample is a sample script: <<parseRequest.jsp>>. It manages the uploaded file(s) on server side. It is based on the Jakarta common-files package. Its 
+	main capabilities are:
+	
+	* Reading the uploaded file, and storing of it on the server (local) hard drive. The target path is defined in the <ourTempDirectory> variable, which default value is </tmp/>
+	
+	* Concatenation of the chunk, when using the applet chunk mode. Each chunk is stored in the 'ourTempDirectory' path. Then, after receiving the last chunk, all chunk
+	are concatenated, to create the full file back. All chunks remain in the temp folder. This is useful for debug purpose. Please remember, that 
+	<<the chunk parts, should be cleaned when in production>>.
+	
+	* Return various information in the upload response. These information can be read in the JUpload debug output. Please see the {{./howto-debug.html}} page.
+	
+	* Generate an error, to check the applet behavior. You should use the "error=true" parameter on the URL, to force the error generation. The URL could be something like this:
+	<http://localhost:8080/jupload/parseRequest.jsp?error=true>
+	
+	* Generate an warning, to check the applet behavior. You should use the "warning=true" parameter on the URL, to force the error generation. The URL could be something like this:
+	<http://localhost:8080/jupload/parseRequest.jsp?error=false&warning=true>
+	
+	[]
+	
+	
+	The java sample is actually an exploded J2EE application. You can use the given content 'as is', with tomcat, by executing these steps:
+	
+	* Access to the tomcat manager HTML GUI (default: {{http://localhost:8080/manager/html}}),
+	
+	* Go to the <Deployer> part of it,
+	
+	* Select </jupload> in the context path,
+	
+	* Select the full path of the sample.java folder, in the <URL to WAR file or folder>. For instance: 
+	<H:\appli\EclipsePortable\Data\workspace\jupload\src\site\resources\samples.java>
+	
+	* Click on the <Deploy> button
+	
+	* Check the deployment by using going to the fileupload.html file of this context. For example: {{http://localhost:8080/jupload/fileupload.html}}, where 8080 is the
+	port for your tomcat installation (8080 is actually the default one), and /jupload is the path you entered in the context path, here above.
+	
+	[]	 
+
+
+* {PHP Sample}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+	The PHP sample is available in this folder: <./src/site/resources/samples.PHP>. It consists of three PHP files:
+	
+	* <<jupload.php>> is the main one. It contains a PHP class, which hides all JUpload complexity:
+	
+		* It reads the uploaded files, and concatenates the chunk (when the applet is used in chunk mode).
+		
+		* The $appletparams contains the parameters to be sent to the applet. Read about the applet parameters here: {{./apidocs/wjhk/jupload2/policies/UploadPolicy.html}}
+		
+		* The $classparams contains the various parameter to manage the PHP class itself. They are quite self-explanatory, so I let you read them.    
+	
+	* <<index.php>> is the starting one. It contains:
+	
+		* The PHP code which uses the jupload PHP class
+		
+		* The HTML code which, once sent to the navigator, will display the applet on your web page.
+		
+	* <<after_upload.php>> is a sample of a page which manages the result of the upload.
+	
+	[] 
+
